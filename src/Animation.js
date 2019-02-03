@@ -42,11 +42,13 @@ class Animation extends TiieObject {
             frame.y = frame.y + (frame.height) / 2;
             frame.width = 0;
             frame.height = 0;
+            frame.opacity = 1;
         } else if (animation == 'zoomOut') {
-            frame.x = ((context.width - frame.width) / 2) + (frame.width / 2);
+            frame.x = frame.x + (frame.width) / 2;
             frame.y = frame.y + (frame.height) / 2;
             frame.width = 0;
             frame.height = 0;
+            frame.opacity = 0;
         } else if(animation == 'slideInFromLeft') {
             frame.x = 0;
             frame.width = frame.width;
@@ -91,7 +93,7 @@ class Animation extends TiieObject {
 .${animation} {
     ${to}
     animation-name: ${animation};
-    animation-duration: 0.3s;
+    animation-duration: 0.5s;
 }
         `);
 
