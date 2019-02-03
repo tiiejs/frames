@@ -1,6 +1,11 @@
+/** @module Tiie/Frames */
 import TiieObject from "Tiie/Object";
 
 const cn = 'Animation';
+
+/**
+ * @class
+ */
 class Animation extends TiieObject {
     constructor() {
         super();
@@ -15,11 +20,21 @@ class Animation extends TiieObject {
         p.style = jQuery("#em-frames__animate");
 
         if (!p.style.length) {
+            // TODO Przekazanie jQuery w inny sposób niż globalny.
             p.style = jQuery(`<style id="em-frames__animate"></style>`);
             jQuery("head").append(p.style);
         }
     }
 
+    /**
+     * Calculate the coordinates to generate the animation.
+     *
+     * @param {string} animation
+     * @param {object} context
+     * @param {object} frame
+     *
+     * @return {object}
+     */
     calculate(animation, context, frame) {
         if(0) {
         } else if (animation == 'zoomIn') {
@@ -34,22 +49,16 @@ class Animation extends TiieObject {
             frame.height = 0;
         } else if(animation == 'slideInFromLeft') {
             frame.x = 0;
-            // frame.y = frame.y;
             frame.width = frame.width;
             frame.height = frame.height;
         } else if(animation == 'slideInFromRight') {
             frame.x = context.width - frame.width;
-            // frame.y = frame.y;
             frame.width = frame.width;
             frame.height = frame.height;
         } else if(animation == 'slideInFromTop') {
-            // frame.x = context.width - frame.width;
             frame.y = 0
-            // frame.width = frame.width;
-            // frame.height = frame.height;
         } else if(animation == 'slideInFromBottom') {
             frame.x = context.width - frame.width;
-            // frame.y = frame.y;
             frame.width = frame.width;
             frame.height = frame.height;
         }

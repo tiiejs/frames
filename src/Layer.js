@@ -1,9 +1,18 @@
+/** @module Tiie/Frames */
 import TiieObject from "Tiie/Object";
 
 import Layout from "Tiie/Frames/Layouts/Layout";
 import Animation from "Tiie/Frames/Animation";
 
 const cn = 'Layer';
+
+/**
+ * Layer representation.
+ *
+ * @param {object} params
+ *
+ * @class
+ */
 class Layer extends TiieObject {
     constructor(params = {}) {
         super();
@@ -36,8 +45,6 @@ class Layer extends TiieObject {
         this.set("-marginRight", params.marginRight != undefined ? params.marginRight : null);
         this.set("-marginBottom", params.marginBottom != undefined ? params.marginBottom : null);
 
-        // animationIntro
-        // animationIntro
     }
 
     layout(layout) {
@@ -78,7 +85,5 @@ class Layer extends TiieObject {
 }
 
 Layer.LAYER_DEFAULT = "default";
-// Layer.LAYER_NOTIFICATIONS = "notifications";
-// Layer.LAYER_MESSAGES = "messages";
 
 export default Layer;

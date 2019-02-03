@@ -1,3 +1,5 @@
+/** @module Tiie/Frames */
+
 import TiieObject from "Tiie/Object";
 import Animation from "Tiie/Frames/Animation";
 
@@ -10,6 +12,25 @@ import Frame from "Tiie/Frames/Frame";
 import Layer from "Tiie/Frames/Layer";
 
 const cn = 'Frames';
+
+/**
+ * Frames is base container for other frames.
+ *
+ * @param {jQuery}   target
+ * @param {boolean}  params.fixed
+ * @param {number}   params.zIndex
+ * @param {string[]} params.align
+ * @param {number}   params.level
+ * @param {string}   params.layout
+ * @param {boolean}  params.modal
+ * @param {number}   params.margin
+ * @param {number}   params.marginTop
+ * @param {number}   params.marginLeft
+ * @param {number}   params.marginRight
+ * @param {number}   params.marginBottom
+ *
+ * @class
+ */
 class Frames extends TiieObject {
     constructor(target, params = {}) {
         super();
@@ -57,7 +78,7 @@ class Frames extends TiieObject {
     }
 
     /**
-     * Create new window.
+     * Create new frame.
      */
     create(layerId, params = {}) {
         let p = this.__private(cn),
@@ -129,8 +150,19 @@ class Frames extends TiieObject {
     /**
      * Create layer with given params. New layer is append to layers stack.
      *
-     * @param {object} params
-     * @return {Tiie.Frames.Layer|null}
+     *
+     * @param {string}   id
+     * @param {string[]} params.align
+     * @param {number}   params.level
+     * @param {string}   params.layout
+     * @param {boolean}  params.modal
+     * @param {number}   params.margin
+     * @param {number}   params.marginTop
+     * @param {number}   params.marginLeft
+     * @param {number}   params.marginRight
+     * @param {number}   params.marginBottom
+     *
+     * @return {Tiie.Frames.Layer}
      */
     createLayer(id, params = {}) {
         let p = this.__private(cn);
@@ -197,9 +229,7 @@ class Frames extends TiieObject {
         let p = this.__private(cn);
 
         return {
-            // width : p.canvas.width(),
             width : p.target.width(),
-            // height : p.canvas.height(),
             height : p.target.height(),
         };
     }

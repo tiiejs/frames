@@ -1,4 +1,6 @@
+/** @module Tiie/Frames */
 import TiieObject from "Tiie/Object";
+
 import Animation from "Tiie/Frames/Animation";
 
 import Layout from "Tiie/Frames/Layouts/Layout";
