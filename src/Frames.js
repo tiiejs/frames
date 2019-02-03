@@ -40,13 +40,26 @@ class Frames extends TiieObject {
             layers : [],
             layouts : {},
             transforming : 0,
+
+            // Params
             fixed : params.fixed ? 1 : 0,
-            zIndex : params.hasOwnProperty("zIndex") ? params.zIndex : 1000,
+            zIndex : params.zIndex != undefined ? params.zIndex : 1000,
+
+            // Layer params
+            align : params.align,
+            level : params.level,
+            layout : params.layout,
+            modal : params.modal,
+            margin : params.margin,
+            marginTop : params.marginTop,
+            marginLeft : params.marginLeft,
+            marginRight : params.marginRight,
+            marginBottom : params.marginBottom,
 
             // Animation module.
             animation : new Animation(),
             animations : {
-                initFrame : {
+                show : {
                     name : "zoomIn",
                     // name : "slideInFromRight",
                     // name : "slideInFromLeft",
@@ -56,7 +69,7 @@ class Frames extends TiieObject {
                         duration : 4,
                     },
                 },
-                outFrame : {
+                hide : {
                     name : "zoomOut",
                     // name : "slideInFromBottom",
                     params : {
@@ -103,7 +116,7 @@ class Frames extends TiieObject {
             ui = jQuery(`<div class="em-frames__container${p.fixed ? ` --fixed` : ``}${params.classes ? ` ${params.classes.map(c => c).join(' ')}` : ``}">`)
         ;
 
-        ui.css({"z-index" : p.zIndex});
+        // ui.css({"z-index" : p.zIndex});
         ui.append(object.element());
 
         layer.frames.push({
@@ -167,9 +180,21 @@ class Frames extends TiieObject {
     createLayer(id, params = {}) {
         let p = this.__private(cn);
 
+
         p.layers.push({
             id,
-            object : new Layer(params),
+            object : new Layer({
+                align : p.align,
+                level : p.level,
+                layout : p.layout,
+                modal : p.modal,
+                margin : p.margin,
+                marginTop : p.marginTop,
+                marginLeft : p.marginLeft,
+                marginRight : p.marginRight,
+                marginBottom : p.marginBottom,
+            }),
+
             frames : [],
             uiModal : null,
         });
@@ -241,7 +266,7 @@ class Frames extends TiieObject {
             context = this.context(),
 
             // Level
-            levelOffset = 0,
+            levelOffset = p.zIndex,
             levelMax = 0
         ;
 
@@ -284,7 +309,7 @@ class Frames extends TiieObject {
 
                     // todo Frame height for auto height.
                     if (frame.height == 0) {
-                        frame.height = 200;
+                        frame.height = 100;
                     }
                 }
 
@@ -354,7 +379,7 @@ class Frames extends TiieObject {
                         opacity : 0,
                     };
 
-                    frame.last = p.animation.calculate(p.animations.initFrame.name, context, frame.last);
+                    frame.last = p.animation.calculate(layer.object.animation('show').name, context, frame.last);
                 }
 
                 if (!frame.attached && frame.visible) {
@@ -372,7 +397,7 @@ class Frames extends TiieObject {
                         opacity : frame.opacity,
                     };
 
-                    frame = p.animation.calculate(p.animations.outFrame.name, context, frame);
+                    frame = p.animation.calculate(layer.object.animation("hide").name, context, frame);
                 }
 
                 frame.ui.css("z-index", frame.level);

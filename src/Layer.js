@@ -19,16 +19,15 @@ class Layer extends TiieObject {
 
         let p = this.__private(cn, {
             animations : {
-                show : {
+                show : params.animationShow ? params.animationShow : {
                     name : Animation.ANIMATION_ZOOM_IN,
                     params : {},
                 },
-                hide : {
+                hide : params.animationHide ? params.animationHide : {
                     name : Animation.ANIMATION_ZOOM_OUT,
                     params : {},
                 },
             },
-            // private
         });
 
         this.set("-align", params.align != undefined ? params.align : null);
@@ -44,7 +43,6 @@ class Layer extends TiieObject {
         this.set("-marginLeft", params.marginLeft != undefined ? params.marginLeft : null);
         this.set("-marginRight", params.marginRight != undefined ? params.marginRight : null);
         this.set("-marginBottom", params.marginBottom != undefined ? params.marginBottom : null);
-
     }
 
     layout(layout) {

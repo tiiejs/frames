@@ -37,7 +37,20 @@ class Service extends TiieObject {
         ;
 
         if(!p.attached.has(target)) {
-            frames = new Frames(target, params);
+            frames = new Frames(target, {
+                // Params
+                fixed : params.fixed,
+                zIndex : params.zIndex,
+                align : params.align,
+                level : params.level,
+                layout : params.layout,
+                modal : params.modal,
+                margin : params.margin,
+                marginTop : params.marginTop,
+                marginLeft : params.marginLeft,
+                marginRight : params.marginRight,
+                marginBottom : params.marginBottom,
+            });
 
             p.attached.set(target, frames);
         } else {
