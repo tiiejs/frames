@@ -19,6 +19,7 @@ class Service extends TiieObject {
 
         let p = this.__private(cn, {
             attached : new WeakMap(),
+            attachedFixed : new WeakMap(),
         });
     }
 
@@ -27,38 +28,53 @@ class Service extends TiieObject {
      * attached. If frames is attached already then this frames are return.
      *
      * @param {jQuery} target
+     * @param {boolean} fixed
      * @param {object} params
      *
      * @return {Tiie.Frames.Frames}
      */
-    attach(target, params = {}) {
+    attach(target, fixed = 0, params = {}) {
         let p = this.__private(cn),
-            frames
+            attached = fixed ? p.attachedFixed : p.attached;
         ;
 
-        if(!p.attached.has(target)) {
-            frames = new Frames(target, {
-                // Params
-                fixed : params.fixed,
+        if(attached.has(target)) {
+            return attached.get(target);
+        } else {
+            let frames = new Frames(target, {
+                fixed,
                 zIndex : params.zIndex,
-                align : params.align,
-                level : params.level,
-                layout : params.layout,
-                modal : params.modal,
-                margin : params.margin,
-                marginTop : params.marginTop,
-                marginLeft : params.marginLeft,
-                marginRight : params.marginRight,
-                marginBottom : params.marginBottom,
             });
 
-            p.attached.set(target, frames);
-        } else {
-            frames = p.attached.get(target);
-        }
+            attached.set(target, frames);
 
-        return frames;
+            return frames;
+        }
     }
+
+    // /**
+    //  * Check if there are frames attached for given target.
+    //  *
+    //  * @param {jQuery} frames
+    //  * @return {boolean}
+    //  */
+    // attached(target) {
+    //     let p = this.__private(cn);
+
+    //     return p.attached.has(target) ? 1 : 0;
+    // }
+
+    // /**
+    //  * Return frames reference if frames are attached to target.
+    //  *
+    //  * @param {jQuery} frames
+    //  * @return {Tiie.Frames.Frames|null}
+    //  */
+    // frames(frames) {
+    //     let p = this.__private(cn);
+
+    //     return p.attached.has(target) ? p.attached.get(target) : null;
+    // }
 }
 
 export default Service;

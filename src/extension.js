@@ -8,8 +8,13 @@ export default function(app, params = {}) {
     app.components().set("@frames", service);
 
     // Create Frames for window.
-    app.components().set("@frames.window", service.attach(app.target(), {
-        fixed : 1,
+    app.components().set("@frames.window", service.attach(app.target(), 1, {
         zIndex : params.windowZIndex,
     }));
+
+    app.components().set("@frames.frames", service.attach(app.target(), 1, {
+        zIndex : params.windowZIndex,
+    }));
+
+    return 1;
 }

@@ -2,50 +2,67 @@ import Layout from "Tiie/Frames/Layouts/Layout";
 
 const cn = 'BoxLayout';
 class BoxLayout extends Layout {
-    constructor(windows, params = {}) {
-        super(windows, params);
+    constructor(frames, params = {}) {
+        super(frames, params);
 
-        let p = this.__private(cn, {});
+        let p = this.__private(cn, {
+            align : params.align ? params.align : ["center"],
+        });
 
         // Set private.
-        p.windows = windows;
+        p.frames = frames;
     }
 
-    recalculate(frames = []) {
+    // recalculate(frames = []) {
+    recalculate(frames = [], layer) {
         let p = this.__private(cn),
-            canvasHeight = p.windows.height(),
-            canvasWidth = p.windows.width(),
-            lastVisible = null
+            height = p.frames.height(),
+            width = p.frames.width(),
+            last = {},
+            first = 1,
+
+            // attributes
+            align = layer.get("align"),
+
+            // margin
+            margin = layer.get("margin"),
+            marginTop = layer.get("marginTop"),
+            marginLeft = layer.get("marginLeft"),
+            marginRight = layer.get("marginRight"),
+            marginBottom = layer.get("marginBottom")
         ;
 
-        frames.forEach((frame, key) => {
-            if (frame.visible) {
-                lastVisible = frame;
+        // Calculate margin.
+        margin = margin == null ? 0 : margin;
+        marginTop = marginTop == null ? margin : marginTop;
+        marginLeft = marginLeft == null ? margin : marginLeft;
+        marginRight = marginRight == null ? margin : marginRight;
+        marginBottom = marginBottom == null ? margin : marginBottom;
+
+        if(!(align = layer.align())) align = ["center", "middle"];
+
+        let frame = null;
+
+        frames.forEach((f) => {
+            if(f.visible) {
+                frame = f;
             }
         });
 
-        frames.forEach((frame, key) => {
-            if (frame != lastVisible) {
-                frame.visible = 0;
-            } else {
-                frame.visible = 1;
-            }
-
-            frame.y = 20;
-
-            // Calculate align
+        if(frame) {
             if(0) {
             } else if (frame.align.includes("left")) {
-                // frame.transform.x = 0;
-                frame.x = 0;
+                frame.x = 0 + marginLeft;
             } else if (frame.align.includes("center")) {
-                // frame.transform.x = (canvasWidth - frame.width) / 2;
-                frame.x = (canvasWidth - frame.width) / 2;
+                // frame.transform.x = (width - frame.width) / 2;
+                frame.x = ((width - frame.width) / 2) + marginLeft;
             } else if (frame.align.includes("right")) {
-                // frame.transform.x = canvasWidth - frame.width;
-                frame.x = canvasWidth - frame.width;
+                // frame.transform.x = width - frame.width;
+                frame.x = (width - frame.width) - marginRight;
             }
-        });
+
+            frame.y = 0 + marginTop;
+        }
 
         return frames;
     }

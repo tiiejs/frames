@@ -93,7 +93,7 @@ class Animation extends TiieObject {
 .${animation} {
     ${to}
     animation-name: ${animation};
-    animation-duration: 0.5s;
+    animation-duration: 0.3s;
 }
         `);
 

@@ -18,16 +18,11 @@ class Layer extends TiieObject {
         super();
 
         let p = this.__private(cn, {
-            animations : {
-                show : params.animationShow ? params.animationShow : {
-                    name : Animation.ANIMATION_ZOOM_IN,
-                    params : {},
-                },
-                hide : params.animationHide ? params.animationHide : {
-                    name : Animation.ANIMATION_ZOOM_OUT,
-                    params : {},
-                },
-            },
+            animationShowName : params.animationShowName !== undefined ? params.animationShowName : Animation.ANIMATION_ZOOM_IN,
+            animationShowParams : params.animationShowParams !== undefined ? params.animationShowParams : {},
+
+            animationHideName : params.animationHideName !== undefined ? params.animationHideName : Animation.ANIMATION_ZOOM_OUT,
+            animationHideParams : params.animationHideParams !== undefined ? params.animationHideParams : {},
         });
 
         this.set("-align", params.align != undefined ? params.align : null);
@@ -60,23 +55,42 @@ class Layer extends TiieObject {
     /**
      * Return animation with given name or returns animation.
      *
+     * @param {string} type
      * @param {string} name
-     * @param {object} params
+     * @param {object} [params]
+     *
      * @return {object|null|this}
      */
     animation(...args) {
         let p = this.__private(cn);
 
-        if (args.length == 1) {
-            return p.animations[args[0]] ? p.animations[args[0]] : null;
-        } else if(args.length == 2) {
-            p.animations[args[0]] = {
-                name : args[0],
-                params : args[1] ? args[1] : {},
-            };
+        if(args[0] == "show") {
+            if(args.length == 1) {
+                return {
+                    name : p.animationShowName,
+                    params : p.animationShowParams,
+                };
+            } else {
+                p.animationShowName = args[1];
+                p.animationShowParams = args[2] ? args[2] : {};
 
-            return this;
+                return this;
+            }
+        } else if(args[0] == "hide") {
+            if(args.length == 1) {
+                return {
+                    name : p.animationHideName,
+                    params : p.animationHideParams,
+                };
+            } else {
+                p.animationHideName = args[1];
+                p.animationHideParams = args[2] ? args[2] : {};
+
+                return this;
+            }
         } else {
+            this.log(`Inproper type of animation.`, "warning");
+
             return null;
         }
     }

@@ -19,15 +19,6 @@ const cn = 'Frames';
  * @param {jQuery}   target
  * @param {boolean}  params.fixed
  * @param {number}   params.zIndex
- * @param {string[]} params.align
- * @param {number}   params.level
- * @param {string}   params.layout
- * @param {boolean}  params.modal
- * @param {number}   params.margin
- * @param {number}   params.marginTop
- * @param {number}   params.marginLeft
- * @param {number}   params.marginRight
- * @param {number}   params.marginBottom
  *
  * @class
  */
@@ -43,18 +34,7 @@ class Frames extends TiieObject {
 
             // Params
             fixed : params.fixed ? 1 : 0,
-            zIndex : params.zIndex != undefined ? params.zIndex : 1000,
-
-            // Layer params
-            align : params.align,
-            level : params.level,
-            layout : params.layout,
-            modal : params.modal,
-            margin : params.margin,
-            marginTop : params.marginTop,
-            marginLeft : params.marginLeft,
-            marginRight : params.marginRight,
-            marginBottom : params.marginBottom,
+            zIndex : params.zIndex !== undefined ? params.zIndex : 1000,
 
             // Animation module.
             animation : new Animation(),
@@ -87,7 +67,7 @@ class Frames extends TiieObject {
             }
 
             this.reload();
-        }, 100);
+        }, 2000);
     }
 
     /**
@@ -139,6 +119,7 @@ class Frames extends TiieObject {
 
             object,
             ui,
+            uiFrame : object.element(),
         });
 
         this.reload();
@@ -164,35 +145,38 @@ class Frames extends TiieObject {
      * Create layer with given params. New layer is append to layers stack.
      *
      *
-     * @param {string}   id
-     * @param {string[]} params.align
-     * @param {number}   params.level
-     * @param {string}   params.layout
-     * @param {boolean}  params.modal
-     * @param {number}   params.margin
-     * @param {number}   params.marginTop
-     * @param {number}   params.marginLeft
-     * @param {number}   params.marginRight
-     * @param {number}   params.marginBottom
+     * @param {string} id
+     * @param {string[]} [param.align]
+     * @param {string} [param.animationHideName]
+     * @param {string} [param.animationShowName]
+     * @param {string} [param.layout]
+     * @param {number} [param.level]
+     * @param {number} [param.margin]
+     * @param {number} [param.marginBottom]
+     * @param {number} [param.marginLeft]
+     * @param {number} [param.marginRight]
+     * @param {number} [param.marginTop]
+     * @param {boolean} [param.modal]
      *
      * @return {Tiie.Frames.Layer}
      */
     createLayer(id, params = {}) {
         let p = this.__private(cn);
 
-
         p.layers.push({
             id,
             object : new Layer({
-                align : p.align,
-                level : p.level,
-                layout : p.layout,
-                modal : p.modal,
-                margin : p.margin,
-                marginTop : p.marginTop,
-                marginLeft : p.marginLeft,
-                marginRight : p.marginRight,
-                marginBottom : p.marginBottom,
+                align : params.align,
+                animationHideName : params.animationHideName,
+                animationShowName : params.animationShowName,
+                layout : params.layout,
+                level : params.level,
+                margin : params.margin,
+                marginBottom : params.marginBottom,
+                marginLeft : params.marginLeft,
+                marginRight : params.marginRight,
+                marginTop : params.marginTop,
+                modal : params.modal,
             }),
 
             frames : [],
@@ -267,7 +251,7 @@ class Frames extends TiieObject {
 
             // Level
             levelOffset = p.zIndex,
-            levelMax = 0
+            levelMax = levelOffset
         ;
 
         if (canvasWidth  == 0 || canvasHeight == 0) {
@@ -305,7 +289,8 @@ class Frames extends TiieObject {
                 if (frame.object.height()) frame.height = this.__calculate("height", frame.object.height());
 
                 if (frame.object.height() == "auto") {
-                    frame.height = jQuery(frame.ui.get(0).firstChild).height();
+                    frame.height = jQuery(frame.uiFrame.get(0).firstChild).outerHeight();
+                    console.log('frame.height', frame.height);
 
                     // todo Frame height for auto height.
                     if (frame.height == 0) {
@@ -351,6 +336,7 @@ class Frames extends TiieObject {
 
             layer.frames.forEach((frame) => {
                 frame.level += levelOffset;
+                frame.ui.css("z-index", frame.level);
 
                 if(frame.level > levelMax) {
                     levelMax = frame.level;
