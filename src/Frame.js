@@ -13,7 +13,8 @@ class Frame extends TiieObject {
         p.x = params.x ? params.x : 0;
         p.y = params.y ? params.y : 0;
 
-        p.align = params.align ? params.align : ["center"];
+        // p.align = params.align ? params.align : ["center"];
+        p.align = params.align ? params.align : null;
         p.size = params.size ? params.size : "normal";
         p.width = params.width ? params.width : null;
         p.height = params.height ? params.height : null;

@@ -22,7 +22,7 @@ class BoxLayout extends Layout {
             first = 1,
 
             // attributes
-            align = layer.get("align"),
+            // align = layer.get("align") ? layer.get("align") : ["center"],
 
             // margin
             margin = layer.get("margin"),
@@ -39,8 +39,6 @@ class BoxLayout extends Layout {
         marginRight = marginRight == null ? margin : marginRight;
         marginBottom = marginBottom == null ? margin : marginBottom;
 
-        if(!(align = layer.align())) align = ["center", "middle"];
-
         let frame = null;
 
         frames.forEach((f) => {
@@ -50,13 +48,15 @@ class BoxLayout extends Layout {
         });
 
         if(frame) {
+            let align = frame.align ? frame.align : (layer.align() ? layer.align() : ["center"]);
+
             if(0) {
-            } else if (frame.align.includes("left")) {
+            } else if (align.includes("left")) {
                 frame.x = 0 + marginLeft;
-            } else if (frame.align.includes("center")) {
+            } else if (align.includes("center")) {
                 // frame.transform.x = (width - frame.width) / 2;
                 frame.x = ((width - frame.width) / 2) + marginLeft;
-            } else if (frame.align.includes("right")) {
+            } else if (align.includes("right")) {
                 // frame.transform.x = width - frame.width;
                 frame.x = (width - frame.width) - marginRight;
             }

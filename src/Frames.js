@@ -67,7 +67,7 @@ class Frames extends TiieObject {
             }
 
             this.reload();
-        }, 2000);
+        }, 100);
     }
 
     /**
@@ -290,7 +290,6 @@ class Frames extends TiieObject {
 
                 if (frame.object.height() == "auto") {
                     frame.height = jQuery(frame.uiFrame.get(0).firstChild).outerHeight();
-                    console.log('frame.height', frame.height);
 
                     // todo Frame height for auto height.
                     if (frame.height == 0) {
