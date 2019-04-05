@@ -14,12 +14,13 @@ import Layer from "Tiie/Frames/Layer";
 
 const cn = 'Service';
 class Service extends TiieObject {
-    constructor() {
+    constructor(responsive) {
         super();
 
         let p = this.__private(cn, {
             attached : new WeakMap(),
             attachedFixed : new WeakMap(),
+            responsive,
         });
     }
 
@@ -41,7 +42,7 @@ class Service extends TiieObject {
         if(attached.has(target)) {
             return attached.get(target);
         } else {
-            let frames = new Frames(target, {
+            let frames = new Frames(target, p.responsive, {
                 fixed,
                 zIndex : params.zIndex,
             });

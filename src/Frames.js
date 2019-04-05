@@ -1,5 +1,4 @@
 /** @module Tiie/Frames */
-
 import TiieObject from "Tiie/Object";
 import Animation from "Tiie/Frames/Animation";
 
@@ -23,13 +22,14 @@ const cn = 'Frames';
  * @class
  */
 class Frames extends TiieObject {
-    constructor(target, params = {}) {
+    constructor(target, responsive, params = {}) {
         super();
 
         let p = this.__private(cn, {
             target,
             layers : [],
             layouts : {},
+            responsive,
             transforming : 0,
 
             // Params
@@ -67,7 +67,7 @@ class Frames extends TiieObject {
             }
 
             this.reload();
-        }, 100);
+        }, 1000);
     }
 
     /**
@@ -186,7 +186,7 @@ class Frames extends TiieObject {
         return p.layers[p.layers.length-1].object;
     }
 
-    __calculate(attribute, value, relative = "canvas") {
+    __calculate(attribute, value) {
         let p = this.__private(cn);
 
         if (typeof value == "number") {
@@ -197,28 +197,29 @@ class Frames extends TiieObject {
             return value;
         }
 
-        let divisions = {
-            tiny : 0.1,
-            small : 0.25,
-            normal : 0.50,
-            large : 0.75,
-            fullscreen : 1,
-        };
-
-        let division;
-
-        if (divisions[value]) {
-            division = divisions[value];
-        } else {
-            division = divisions["normal"];
-        }
+        let relativeTo = 0;
 
         if(attribute == "width") {
-            // return Math.round(p.canvas.width() * division);
-            return Math.round(p.target.width() * division);
+            relativeTo = p.target.width();
         } else if (attribute == "height") {
-            // return Math.round(p.canvas.height() * division);
-            return Math.round(p.target.height() * division);
+            relativeTo = p.target.height();
+        }
+
+        if(
+            typeof value == "object" ||
+            typeof value == "string"
+        ) {
+            return p.responsive.calculate(p.target.width(), value);
+        } else {
+            return relativeTo;
+        }
+    }
+
+    _css(ui, attribute, value) {
+        let p = this.__private(cn);
+
+        if(ui.css(attribute) != value) {
+            ui.css(attribute, value);
         }
     }
 
@@ -267,11 +268,6 @@ class Frames extends TiieObject {
             layer.frames.forEach((frame) => {
                 frame.level = 0;
 
-                if (frame.object.size()) {
-                    frame.height = this.__calculate("height", frame.object.size());
-                    frame.width = this.__calculate("width", frame.object.size());
-                }
-
                 if (frame.object.is("@destroyed")) {
                     frame.visible = 0;
                 } else {
@@ -313,13 +309,21 @@ class Frames extends TiieObject {
                 if(layer.frames.some(frame => frame.visible)) {
                     if(!layer.uiModal) {
                         layer.uiModal = jQuery(`<div class="em-frames__modal">`);
-                    }
 
-                    p.target.append(layer.uiModal);
+                        p.target.append(layer.uiModal);
+                    }
                 } else {
                     if(layer.uiModal) {
                         // Detach modal.
+                        // TODO Modal na ramce.
+                        // Trzeba sprawdzic mechanizm modalny czy nie ma
+                        // wycieku pamieci. Wczesniej bylo tak ze modal by za
+                        // kazdym razem appendowany do body co powodowalo
+                        // dziwne zachowanie. Teraz jest appendowany tylko raz
+                        // ale trzeba zewerfikowac czy nie ma gdzies do niego
+                        // referencji.
                         layer.uiModal.detach();
+                        layer.uiModal = null;
                     }
                 }
             } else {
@@ -329,13 +333,17 @@ class Frames extends TiieObject {
             }
 
             if(layer.uiModal) {
-                layer.uiModal.css("z-index", levelOffset);
+                // layer.uiModal.css("z-index", levelOffset);
+                this._css(layer.uiModal, "z-index", levelOffset);
+
                 levelOffset++;
             }
 
             layer.frames.forEach((frame) => {
                 frame.level += levelOffset;
-                frame.ui.css("z-index", frame.level);
+                // frame.ui.css("z-index", frame.level);
+
+                this._css(frame.ui, "z-index", frame.level);
 
                 if(frame.level > levelMax) {
                     levelMax = frame.level;

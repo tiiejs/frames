@@ -48,7 +48,7 @@ class BoxLayout extends Layout {
         });
 
         if(frame) {
-            let align = frame.align ? frame.align : (layer.align() ? layer.align() : ["center"]);
+            let align = frame.align ? frame.align : (layer.align() ? layer.align() : ["center", "middle"]);
 
             if(0) {
             } else if (align.includes("left")) {
@@ -62,6 +62,16 @@ class BoxLayout extends Layout {
             }
 
             frame.y = 0 + marginTop;
+
+            if(0) {
+            } else if (align.includes("top")) {
+                frame.y = 0 + marginTop;
+            } else if (align.includes("middle")) {
+                // frame.transform.x = (width - frame.width) / 2;
+                frame.y = ((height - frame.height) / 2) + marginTop;
+            } else if (align.includes("bottom")) {
+                frame.y = (height - frame.height) - marginBottom;
+            }
         }
 
         return frames;
