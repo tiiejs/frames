@@ -16,8 +16,8 @@ const cn = 'Frames';
  * Frames is base container for other frames.
  *
  * @param {jQuery}   target
- * @param {boolean}  params.fixed
- * @param {number}   params.zIndex
+ * @param {boolean}  [params.fixed]
+ * @param {number}   [params.zIndex]
  *
  * @class
  */
@@ -34,29 +34,10 @@ class Frames extends TiieObject {
 
             // Params
             fixed : params.fixed ? 1 : 0,
-            zIndex : params.zIndex !== undefined ? params.zIndex : 1000,
+            zIndex : params.zIndex !== undefined ? params.zIndex : 0,
 
             // Animation module.
             animation : new Animation(),
-            animations : {
-                show : {
-                    name : "zoomIn",
-                    // name : "slideInFromRight",
-                    // name : "slideInFromLeft",
-                    // name : "slideInFromTop",
-                    // name : "slideInFromBottom",
-                    params : {
-                        duration : 4,
-                    },
-                },
-                hide : {
-                    name : "zoomOut",
-                    // name : "slideInFromBottom",
-                    params : {
-                        duration : 4,
-                    },
-                },
-            }
         });
 
         p.target.css("position", "relative");
@@ -67,7 +48,7 @@ class Frames extends TiieObject {
             }
 
             this.reload();
-        }, 1000);
+        }, 500);
     }
 
     /**
@@ -96,7 +77,6 @@ class Frames extends TiieObject {
             ui = jQuery(`<div class="em-frames__container${p.fixed ? ` --fixed` : ``}${params.classes ? ` ${params.classes.map(c => c).join(' ')}` : ``}">`)
         ;
 
-        // ui.css({"z-index" : p.zIndex});
         ui.append(object.element());
 
         layer.frames.push({
@@ -171,11 +151,13 @@ class Frames extends TiieObject {
                 animationShowName : params.animationShowName,
                 layout : params.layout,
                 level : params.level,
+
                 margin : params.margin,
                 marginBottom : params.marginBottom,
                 marginLeft : params.marginLeft,
                 marginRight : params.marginRight,
                 marginTop : params.marginTop,
+
                 modal : params.modal,
             }),
 
@@ -184,35 +166,6 @@ class Frames extends TiieObject {
         });
 
         return p.layers[p.layers.length-1].object;
-    }
-
-    __calculate(attribute, value) {
-        let p = this.__private(cn);
-
-        if (typeof value == "number") {
-            return value;
-        }
-
-        if (value == "auto") {
-            return value;
-        }
-
-        let relativeTo = 0;
-
-        if(attribute == "width") {
-            relativeTo = p.target.width();
-        } else if (attribute == "height") {
-            relativeTo = p.target.height();
-        }
-
-        if(
-            typeof value == "object" ||
-            typeof value == "string"
-        ) {
-            return p.responsive.calculate(p.target.width(), value);
-        } else {
-            return relativeTo;
-        }
     }
 
     _css(ui, attribute, value) {
@@ -273,27 +226,6 @@ class Frames extends TiieObject {
                 } else {
                     frame.visible = frame.object.is("@visible");
                 }
-
-                frame.opacity = frame.object.opacity();
-
-                if (frame.object.size()) {
-                    frame.width = this.__calculate("width", frame.object.size());
-                    frame.height = this.__calculate("height", frame.object.size());
-                }
-
-                if (frame.object.width()) frame.width = this.__calculate("width", frame.object.width());
-                if (frame.object.height()) frame.height = this.__calculate("height", frame.object.height());
-
-                if (frame.object.height() == "auto") {
-                    frame.height = jQuery(frame.uiFrame.get(0).firstChild).outerHeight();
-
-                    // todo Frame height for auto height.
-                    if (frame.height == 0) {
-                        frame.height = 100;
-                    }
-                }
-
-                frame.align = frame.object.align();
             });
 
             // Recalculate frames
@@ -301,7 +233,7 @@ class Frames extends TiieObject {
 
             // After recalculation I can set proper level for each frames.
             // First I increase levelOffset becaouse there is a new layer.
-            levelOffset++;
+            // levelOffset++;
 
             // Check if there is modal.
             if(layer.object.is("modal")) {
@@ -333,20 +265,18 @@ class Frames extends TiieObject {
             }
 
             if(layer.uiModal) {
-                // layer.uiModal.css("z-index", levelOffset);
                 this._css(layer.uiModal, "z-index", levelOffset);
 
                 levelOffset++;
             }
 
             layer.frames.forEach((frame) => {
-                frame.level += levelOffset;
-                // frame.ui.css("z-index", frame.level);
+                let counted = frame.level + levelOffset;
 
-                this._css(frame.ui, "z-index", frame.level);
+                this._css(frame.ui, "z-index", counted);
 
-                if(frame.level > levelMax) {
-                    levelMax = frame.level;
+                if(counted > levelMax) {
+                    levelMax = counted;
                 }
             });
 
@@ -376,7 +306,6 @@ class Frames extends TiieObject {
                 }
 
                 if (!frame.attached && frame.visible) {
-                    // p.canvas.append(frame.ui);
                     p.target.append(frame.ui);
                     frame.attached = 1;
                 }
@@ -392,8 +321,6 @@ class Frames extends TiieObject {
 
                     frame = p.animation.calculate(layer.object.animation("hide").name, context, frame);
                 }
-
-                frame.ui.css("z-index", frame.level);
 
                 if (
                     frame.x != frame.last.x ||
@@ -445,11 +372,11 @@ class Frames extends TiieObject {
 
         if (!p.layouts[name]) {
             if(name == Layout.TYPE_BOX) {
-                p.layouts[name] = new BoxLayout(this);
+                p.layouts[name] = new BoxLayout(this, p.target, p.responsive);
             } else if(name == Layout.TYPE_STACK) {
-                p.layouts[name] = new StackLayout(this);
+                p.layouts[name] = new StackLayout(this, p.target, p.responsive);
             } else if(name == Layout.TYPE_STACK) {
-                p.layouts[name] = new CartesianLayout(this);
+                p.layouts[name] = new CartesianLayout(this, p.target, p.responsive);
             }
         }
 

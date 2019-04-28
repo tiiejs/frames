@@ -28,10 +28,12 @@ class Frame extends TiieObject {
         this.set("@hover", 0);
 
         p.element.mouseenter(() => {
+            console.log('Frame.mouseenter');
             this.set("@hover", 1);
         });
 
         p.element.mouseleave(() => {
+            console.log('Frame.mouseleave');
             this.set("@hover", 0);
         });
     }
@@ -100,7 +102,6 @@ class Frame extends TiieObject {
         }
     }
 
-    // align = ["top", "center"]
     align(align) {
         let p = this.__private(cn);
 

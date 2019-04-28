@@ -2,11 +2,12 @@ import Layout from "Tiie/Frames/Layouts/Layout";
 
 const cn = 'StackLayout';
 class StackLayout extends Layout {
-    constructor(frames, params = {}) {
-        super(frames, params);
+    constructor(frames, target, responsive) {
+        super(frames, target, responsive);
 
         let p = this.__private(cn, {
-            align : params.align ? params.align : ["center"],
+            // ...
+            responsive,
         });
 
         // Set private.
@@ -15,13 +16,13 @@ class StackLayout extends Layout {
 
     recalculate(frames = [], layer) {
         let p = this.__private(cn),
-            height = p.frames.height(),
-            width = p.frames.width(),
+            height = this.__target().height(),
+            width = this.__target().width(),
             last = {},
             first = 1,
 
             // attributes
-            align = layer.get("align"),
+            // align = layer.get("align"),
 
             // margin
             margin = layer.get("margin"),
@@ -38,7 +39,36 @@ class StackLayout extends Layout {
         marginRight = marginRight == null ? margin : marginRight;
         marginBottom = marginBottom == null ? margin : marginBottom;
 
-        if(!(align = layer.align())) align = ["center"];
+        // Align
+        let layerAlign = p.responsive.selectValue(width, layer.align());
+
+        // Calculate frames
+        frames.forEach((frame) => {
+            frame.level = 0;
+
+            frame.opacity = frame.object.opacity();
+
+            // Align
+            let frameAlign = p.responsive.selectValue(width, frame.object.align());
+            frame.align = frameAlign ? frameAlign : (layerAlign ? layerAlign : ["center", "top"]);
+
+            if (frame.object.size()) {
+                frame.width = this.__calculate("width", frame.object.size());
+                frame.height = this.__calculate("height", frame.object.size());
+            }
+
+            if (frame.object.width()) frame.width = this.__calculate("width", frame.object.width());
+            if (frame.object.height()) frame.height = this.__calculate("height", frame.object.height());
+
+            if (frame.object.height() == "auto") {
+                frame.height = jQuery(frame.uiFrame.get(0).firstChild).outerHeight();
+
+                // todo Frame height for auto height.
+                if (frame.height == 0) {
+                    frame.height = 100;
+                }
+            }
+        });
 
         frames.forEach((frame, key) => {
             if (!frame.visible) {
@@ -54,12 +84,12 @@ class StackLayout extends Layout {
             }
 
             // Calculate align
-            if (align.includes("left")) {
+            if (frame.align.includes("left")) {
                 frame.x = 0 + marginLeft;
-            } else if (align.includes("center")) {
+            } else if (frame.align.includes("center")) {
                 frame.x = ((width - (marginLeft + marginRight)) - frame.width) / 2;
-            } else if (align.includes("right")) {
-                frame.x = (width - marginRight) - frame.width;
+            } else if (frame.align.includes("right")) {
+                frame.x = width - marginRight - frame.width;
             }
 
             last = {

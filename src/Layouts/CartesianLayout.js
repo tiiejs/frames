@@ -2,10 +2,12 @@ import Layout from "Tiie/Frames/Layouts/Layout";
 
 const cn = 'Frames';
 class CartesianLayer extends Layout {
-    constructor(canvas, params = {}) {
-        super(canvas);
+    constructor(frames, target, responsive) {
+        super(frames, target, responsive);
 
-        let p = this.__private(cn, {});
+        let p = this.__private(cn, {
+            // ...
+        });
 
         // Set private.
         p.level = params.hasOwnProperty("level") ? params.level : 1;

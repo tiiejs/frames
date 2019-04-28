@@ -12,10 +12,5 @@ export default function(app, params = {}) {
         zIndex : params.windowZIndex,
     }));
 
-    // TODO sprawdzic czy ta usługa jest potrzebna.
-    app.components().set("@frames.frames", service.attach(app.target(), 1, {
-        zIndex : params.windowZIndex,
-    }));
-
     return 1;
 }
