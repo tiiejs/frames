@@ -71,7 +71,7 @@ class CartesianLayer extends Layout {
 
         p.containers.forEach((container, key) => {
             let animate = 0,
-                visible = container.window.is("@visible")
+                visible = container.window.is("@view.visible")
             ;
 
             if (visible) {

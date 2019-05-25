@@ -67,7 +67,7 @@ class Frames extends TiieObject {
 
                 layer = p.layers.find(layer => layer.id == Layer.LAYER_DEFAULT);
             } else {
-                this.log(`Layer ${layerId} not found.`, "notice", "Tiie.Frames.Frames");
+                this.__log(`Layer ${layerId} not found.`, "notice", "Tiie.Frames.Frames");
 
                 return null;
             }
@@ -224,7 +224,7 @@ class Frames extends TiieObject {
                 if (frame.object.is("@destroyed")) {
                     frame.visible = 0;
                 } else {
-                    frame.visible = frame.object.is("@visible");
+                    frame.visible = frame.object.is("@view.visible");
                 }
             });
 

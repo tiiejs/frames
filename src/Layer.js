@@ -89,7 +89,7 @@ class Layer extends TiieObject {
                 return this;
             }
         } else {
-            this.log(`Inproper type of animation.`, "warning");
+            this.__log(`Inproper type of animation.`, "warning");
 
             return null;
         }

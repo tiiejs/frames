@@ -24,17 +24,17 @@ class Frame extends TiieObject {
         p.element = jQuery(`<div class="em-frames__frame"></div>`);
 
         // Each frame is visible.
-        this.set("@visible", 1);
-        this.set("@hover", 0);
+        this.set("@view.visible", 1);
+        this.set("@view.hover", 0);
 
         p.element.mouseenter(() => {
             console.log('Frame.mouseenter');
-            this.set("@hover", 1);
+            this.set("@view.hover", 1);
         });
 
         p.element.mouseleave(() => {
             console.log('Frame.mouseleave');
-            this.set("@hover", 0);
+            this.set("@view.hover", 0);
         });
     }
 
@@ -53,7 +53,7 @@ class Frame extends TiieObject {
     hide() {
         let p = this.__private(cn);
 
-        this.set("@visible", 0);
+        this.set("@view.visible", 0);
 
         return this;
     }
@@ -61,7 +61,7 @@ class Frame extends TiieObject {
     show() {
         let p = this.__private(cn);
 
-        this.set("@visible", 1);
+        this.set("@view.visible", 1);
 
         return this;
     }
